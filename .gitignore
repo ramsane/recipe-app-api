@@ -105,3 +105,4 @@ venv.bak/
 
 ################# Added by Ramana ##########
 .vscode/
+.idea/
