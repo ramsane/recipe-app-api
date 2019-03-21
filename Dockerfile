@@ -1,4 +1,4 @@
-# WE are pulling this docker 
+# WE are pulling this docker
 FROM python:3.7-alpine
 
 # who's maintaining the project
@@ -9,11 +9,18 @@ ENV PYTHONUNBUFFERED 1
 
 # copy the requirements from local to docker file
 COPY ./requirements.txt /requirements.txt
+# install postgresql-client in the docker
+RUN apk add --update --no-cache postgresql-client
+# install some temperory packages while we run our requirements
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+        gcc libc-dev linux-headers postgresql-dev
 # install all the requirements to our docker container
 RUN pip install -r /requirements.txt
+# delete temperory requirements
+RUN apk del .tmp-build-deps
 
 
-# Create a directory within our docker image that 
+# Create a directory within our docker image that
 # we can use to store our application
 
 # create an empty directory in our docker image
