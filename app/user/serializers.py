@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from django.utils.translation import ugettext as _
 
+
 # Create a new serializer called User serializer, we are going to inherit from
 # serilaizer.ModelSerializer. It does some tasks like creating and retreiving
 # from the database, conversion from database results to Json and vice versa.
@@ -55,4 +56,3 @@ class AuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
-
