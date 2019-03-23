@@ -95,7 +95,7 @@ class PrivateIngredientsApiTests(TestCase):
         # see if it is stored in the database
         ing_exists = Ingredient.objects.filter(
             user=self.user,
-            name=payload['user']
+            name=payload['name']
         ).exists()
 
         self.assertTrue(ing_exists)
