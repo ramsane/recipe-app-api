@@ -81,3 +81,24 @@ class PrivateTagsApiTests(TestCase):
 
         # check for the data
         self.assertEqual(res.data[0]['name'], tag.name)
+
+    def test_create_tag_successful(self):
+        """Test creating a new tag"""
+        payload = {'name': 'Test tag'}
+        self.client.post(TAGS_URL, payload)
+
+        # see if the tag is created in the user
+        exists = Tag.objects.filter(
+            user=self.user,
+            name=payload['name']
+        ).exists()
+
+        self.assertTrue(exists)
+
+    def test_create_tag_invalid(self):
+        """Test creating a new tag with invalid payload"""
+        payload = {'name': ''}
+
+        res = self.client.post(TAGS_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
