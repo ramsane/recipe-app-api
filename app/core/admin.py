@@ -38,3 +38,4 @@ class UserAdmin(BaseUserAdmin):
 # register our custom user to the admin app
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Tag)
+admin.site.register(models.Ingredient)
