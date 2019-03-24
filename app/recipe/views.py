@@ -52,7 +52,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Return appropriate serializer class"""
+        # 'retrieve' is the action when detail page is called.
         if self.action == 'retrieve':
             return serializers.RecipeDetailSerializer
 
         return self.serializer_class
+
+    def perform_create(self, serializer):
+        """Create a new recipe by the authenticated user"""
+        serializer.save(user=self.request.user)
