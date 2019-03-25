@@ -188,3 +188,50 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(ingredients.count(), 2)
         self.assertIn(ingredient1, ingredients)
         self.assertIn(ingredient2, ingredients)
+
+    def test_partial_update_recipe(self):
+        """Test updating a recipe with patch"""
+        # create a recipe app with some tag(s) and add some tag to it
+        recipe = sample_recipe(self.user)
+        recipe.tags.add(sample_tag(self.user))
+
+        # create a new that we wan to update.
+        new_tag = sample_tag(user=self.user, name='Curry')
+        # create a payload with this new_tag and a title
+        payload = {'title': 'Chicken Tikka', 'tags': [new_tag.id]}
+        # patch it with the detailed url
+        url = detail_url(recipe.id)
+        self.client.patch(url, payload)
+
+        # refresh the recipe object which is stored database
+        recipe.refresh_from_db()
+        self.assertEqual(recipe.title, payload['title'])
+        tags = recipe.tags.all()
+        self.assertEqual(len(tags), 1)
+        self.assertIn(new_tag, tags)
+
+    def test_full_update_recipe(self):
+        """Test updating a recipe with PUT"""
+        # create a sample use with some tags
+        recipe = sample_recipe(self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+
+        # create a payload
+        payload = {
+            'title': 'New title',
+            'time_minutes': 12,
+            'price': 13.00
+        }
+        # replace the object with this payload( with no tags )
+        url = detail_url(recipe.id)
+        self.client.put(url, payload)
+
+        # check if it is replaced in the database
+        recipe.refresh_from_db()
+        self.assertEqual(recipe.title, payload['title'])
+        self.assertEqual(recipe.time_minutes, payload['time_minutes'])
+        self.assertEqual(recipe.price, payload['price'])
+
+        # tags needs to be empty
+        tags = recipe.tags.all()
+        self.assertEqual(len(tags), 0)
